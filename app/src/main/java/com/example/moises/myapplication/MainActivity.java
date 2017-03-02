@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                     }
                 });
                 builder.show();
+                String s = "this is a test";
 
 
             }
