@@ -18,6 +18,7 @@ import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.altbeacon.beacon.BeaconParser.ALTBEACON_LAYOUT;
@@ -29,12 +30,19 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     final Region region = new Region(TAG, Identifier.parse("5fd85e4c-8bd1-11e6-ae22-56b6b6499611"), null, null);
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private BeaconManager beaconManager;
+    private ArrayList<AreaAdsFragment> areaAdsFragments;
+    private int bestSignal = -1000;
+    private int lastAreaVisited = 1232445;
+    private int signalCounter = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        areaAdsFragments = new ArrayList<AreaAdsFragment>();
 
+        // Permission To locate beacons ///
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -54,10 +62,18 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             }
 
         }
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout(ALTBEACON_LAYOUT));
         beaconManager.bind(this);
+        AreaAdsFragment fragment1 = AreaAdsFragment.newInstance(0,1);
+        AreaAdsFragment fragment2 = AreaAdsFragment.newInstance(1,1);
+        areaAdsFragments.add(fragment1);
+        areaAdsFragments.add(fragment2);
+
+
+
 
     }
 
@@ -92,11 +108,43 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     @Override
     public void onBeaconServiceConnect() {
 
+
         beaconManager.addRangeNotifier(new RangeNotifier() {
+
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 if(beacons.size()>0){
-                    Log.i(TAG,"BEACON FOUND!  MAC:"+beacons.iterator().next().getBluetoothAddress());
+
+                    Beacon activeBeacon = beacons.iterator().next();
+
+                    Log.i(TAG,"BEACON FOUND!");
+                    Log.i(TAG,"MAC:"+activeBeacon.getBluetoothAddress());
+                    Log.i(TAG,"MAJOR:"+activeBeacon.getId2().toInt());
+                    Log.i(TAG,"MINOR:"+activeBeacon.getId3().toInt());
+                    Log.i(TAG,"RSSI:"+activeBeacon.getRssi());
+
+                    if(signalCounter>=3){
+                        Log.i(TAG,"RESTARTING COUNTER - RESETTING SIGNAL VALUE");
+                        bestSignal = -100;
+                        signalCounter = 0;
+                    }
+
+
+                    if(activeBeacon.getRssi()>bestSignal && activeBeacon.getRssi()>-90&&lastAreaVisited!=activeBeacon.getId3().toInt()){
+                        Log.i(TAG,"INSIDE");
+                        bestSignal = activeBeacon.getRssi();
+                        lastAreaVisited = activeBeacon.getId3().toInt();
+                        Log.i(TAG,"Las visited Area RENEW:"+lastAreaVisited);
+                        if(!areaAdsFragments.isEmpty()){
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container,areaAdsFragments.get(activeBeacon.getId3().toInt()))
+                                    .commit();
+                        }
+                    }
+                    signalCounter++;
+
+
+
                 }
             }
         });
@@ -108,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         }
 
     }
+
+
 
     @Override
     protected void onDestroy() {
