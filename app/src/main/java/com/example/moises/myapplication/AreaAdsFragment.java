@@ -2,13 +2,21 @@ package com.example.moises.myapplication;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class AreaAdsFragment extends Fragment {
+
+    private RecyclerView mRecyclerView;
+    private AdsRecyclerViewAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -59,11 +67,20 @@ public class AreaAdsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        ArrayList<Advertisement> ads = new ArrayList<Advertisement>();
+
 
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
+        for (int i = 0; i <10 ; i++){
+            Advertisement ad1 = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg",0,1);
+            ads.add(ad1);
+        }
 
-        textView = (TextView) view.findViewById(R.id.fragment_text);
-        textView.setText("You are in the area "+ AreaMinor);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler_view);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new AdsRecyclerViewAdapter(ads,getContext());
+        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 

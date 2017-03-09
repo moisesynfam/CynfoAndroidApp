@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         AreaAdsFragment fragment2 = AreaAdsFragment.newInstance(1,1);
         areaAdsFragments.add(fragment1);
         areaAdsFragments.add(fragment2);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container,areaAdsFragments.get(0))
+                .commit();
 
 
 
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                     }
 
 
-                    if(activeBeacon.getRssi()>bestSignal && activeBeacon.getRssi()>-90&&lastAreaVisited!=activeBeacon.getId3().toInt()){
+                   /* if(activeBeacon.getRssi()>bestSignal && activeBeacon.getRssi()>-90&&lastAreaVisited!=activeBeacon.getId3().toInt()){
                         Log.i(TAG,"INSIDE");
                         bestSignal = activeBeacon.getRssi();
                         lastAreaVisited = activeBeacon.getId3().toInt();
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                                     .commit();
                         }
                     }
+                    */
                     signalCounter++;
 
 
