@@ -10,6 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.moises.myapplication.Data.Advertisement;
+import com.example.moises.myapplication.Data.Area;
+import com.example.moises.myapplication.Data.Business;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
@@ -63,6 +73,66 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         }
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("business");
+
+        /*
+        Business business = new Business(2,"Apple");
+        Area area = new Area(2,"music");
+        Advertisement ad = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg");
+        area.ads.add(ad);
+        business.areas.add(area);
+        myRef.child(String.valueOf(business.id_Major)).setValue(business);
+        */
+        myRef.keepSynced(true);
+
+
+
+
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Business b = dataSnapshot.getValue(Business.class);
+
+                Log.d("CYNFO NEW ID " + dataSnapshot.getKey(), "Name "+ b.name);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                 Business b = dataSnapshot.getValue(Business.class);
+
+                 Log.d("CYNFO Modify ID " + s, "Name "+ b.name);
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                Business b = dataSnapshot.getValue(Business.class);
+
+                Log.d("CYNFO Removed", "Name "+ b.name);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Business b = dataSnapshot.getValue(Business.class);
+
+                Log.d("CYNFO MovedID " + s, "Name "+ b.name);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        })  ;
+        // Read from the database
+
+
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout(ALTBEACON_LAYOUT));
@@ -79,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
 
     }
+
 
 
 

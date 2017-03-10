@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.moises.myapplication.Data.Advertisement;
 
 import java.util.ArrayList;
 
@@ -60,9 +61,9 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(adsDataset.get(position).getTitle());
+        holder.mTextView.setText(adsDataset.get(position).title);
         Glide.with(mainContext)
-                .load(adsDataset.get(position).getImageURL())
+                .load(adsDataset.get(position).imageURL)
                 .crossFade()
                 .into(holder.mImageView);
 

@@ -1,4 +1,4 @@
-package com.example.moises.myapplication;
+package com.example.moises.myapplication.Data;
 
 /**
  * Created by Moises on 3/8/2017.
@@ -6,23 +6,21 @@ package com.example.moises.myapplication;
 
 public class Advertisement {
 
-    private String title;
-    private String description;
-    private String imageURL;
-    private int minor;
-    private int major;
+    public  String title;
+    public String description;
+    public String imageURL;
 
-    public Advertisement(){
+
+    public Advertisement() {
 
     }
 
-    public Advertisement(String title, String description,String imageURL,int minor, int major){
+    public Advertisement(String title, String description, String imageURL) {
 
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;
-        this.minor = minor;
-        this.major = major;
+
 
     }
 
@@ -48,21 +46,5 @@ public class Advertisement {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    public int getMinor() {
-        return minor;
-    }
-
-    public void setMinor(int minor) {
-        this.minor = minor;
-    }
-
-    public int getMajor() {
-        return major;
-    }
-
-    public void setMajor(int major) {
-        this.major = major;
     }
 }

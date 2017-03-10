@@ -4,10 +4,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.moises.myapplication.Data.Advertisement;
+import com.example.moises.myapplication.Data.Area;
+import com.example.moises.myapplication.Data.Business;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -67,12 +74,15 @@ public class AreaAdsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
+
+
         ArrayList<Advertisement> ads = new ArrayList<Advertisement>();
 
 
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
         for (int i = 0; i <10 ; i++){
-            Advertisement ad1 = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg",0,1);
+            Advertisement ad1 = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg");
             ads.add(ad1);
         }
 
@@ -83,6 +93,7 @@ public class AreaAdsFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
+
 
 
 
