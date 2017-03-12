@@ -10,9 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.moises.myapplication.Data.Advertisement;
-import com.example.moises.myapplication.Data.Area;
-import com.example.moises.myapplication.Data.Business;
+import com.example.moises.myapplication.Model.Advertisement;
+import com.example.moises.myapplication.Model.Business;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,8 +21,9 @@ import java.util.ArrayList;
 public class AreaAdsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private AdsRecyclerViewAdapter mAdapter;
+    public AdsRecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    public Business FragmentBusiness;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -43,14 +43,20 @@ public class AreaAdsFragment extends Fragment {
     }
 
 
+
+
     // TODO: Rename and change types and number of parameters
-    public static AreaAdsFragment newInstance(int idMinor, int idMajor) {
+    public static AreaAdsFragment newInstance(Business b) {
         AreaAdsFragment fragment = new AreaAdsFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, idMinor);
-        args.putInt(ARG_PARAM2, idMajor);
+//        args.putInt(ARG_PARAM1, idMinor);
+//        args.putInt(ARG_PARAM2, idMajor);
 
-        fragment.setArguments(args);
+        args.putSerializable(ARG_PARAM1,b);
+        Log.d("CYNFO FRAGMENT", "Fragment created with business: "+b.name);
+
+
+
         return fragment;
     }
 
@@ -58,15 +64,17 @@ public class AreaAdsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            AreaMajor = getArguments().getInt(ARG_PARAM2);
-            AreaMinor = getArguments().getInt(ARG_PARAM1);
-
-
-
-
-
+            //AreaMajor = getArguments().getInt(ARG_PARAM2);
+             FragmentBusiness = (Business) getArguments().getSerializable(ARG_PARAM1);
 
         }
+    }
+
+    public void BusinessChange(Business business){
+        FragmentBusiness = business;
+
+        mAdapter.notifyDataSetChanged();
+        Log.d("CYNFO FRAGMENT", "Fragment Business modified");
     }
 
     @Override
@@ -77,19 +85,15 @@ public class AreaAdsFragment extends Fragment {
 
 
 
-        ArrayList<Advertisement> ads = new ArrayList<Advertisement>();
 
 
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
-        for (int i = 0; i <10 ; i++){
-            Advertisement ad1 = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg");
-            ads.add(ad1);
-        }
+
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new AdsRecyclerViewAdapter(ads,getContext());
+        mAdapter = new AdsRecyclerViewAdapter(FragmentBusiness.areas.get(0).ads,getContext());
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }

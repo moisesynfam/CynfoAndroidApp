@@ -10,9 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.moises.myapplication.Data.Advertisement;
-import com.example.moises.myapplication.Data.Area;
-import com.example.moises.myapplication.Data.Business;
+import com.example.moises.myapplication.Model.Business;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +28,7 @@ import org.altbeacon.beacon.Region;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Semaphore;
 
 import static org.altbeacon.beacon.BeaconParser.ALTBEACON_LAYOUT;
 
@@ -45,12 +44,15 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private int lastAreaVisited = 1232445;
     private int signalCounter = 0;
 
+    public static ArrayList<Business> BusinessList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         areaAdsFragments = new ArrayList<AreaAdsFragment>();
+        BusinessList =  new ArrayList<>();
 
         // Permission To locate beacons ///
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("business");
 
+
         /*
         Business business = new Business(2,"Apple");
         Area area = new Area(2,"music");
@@ -89,22 +92,80 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         myRef.keepSynced(true);
 
 
+         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            synchronized public void onDataChange(DataSnapshot dataSnapshot) {
 
+                for (DataSnapshot single: dataSnapshot.getChildren() ) {
+
+                    Business b = single.getValue(Business.class);
+                    AreaAdsFragment areaAdsFragment = new AreaAdsFragment();
+                    areaAdsFragment.FragmentBusiness = b;
+                    areaAdsFragments.add(areaAdsFragment);
+
+                    if(b!=null){
+                        Log.d("CYNFO INITIAL READ ID " + dataSnapshot.getKey(), "Name "+ b.name);
+                        BusinessList.add(b);
+                    }
+                }
+                CallFragment();
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Business b = dataSnapshot.getValue(Business.class);
+                Business newBussiness = dataSnapshot.getValue(Business.class);
+                //Log.d("CYNFO NEW ID " + dataSnapshot.getKey(), "Name "+ newBussiness.name);
 
-                Log.d("CYNFO NEW ID " + dataSnapshot.getKey(), "Name "+ b.name);
+                BusinessList.add(newBussiness);
+//
+//                AreaAdsFragment areaAdsFragment = new AreaAdsFragment();
+//                areaAdsFragment.FragmentBusiness = newBussiness;
+//                areaAdsFragments.add(areaAdsFragment);
+//
+//
+//
+//                Log.d("CYNFO ADDED ID " + dataSnapshot.getKey(), "Name " + newBussiness.name);
+//                CallFragment();
+
 
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                 Business b = dataSnapshot.getValue(Business.class);
+                Business b = dataSnapshot.getValue(Business.class);
 
-                 Log.d("CYNFO Modify ID " + s, "Name "+ b.name);
+                Log.d("CYNFO MODIFICATION", "Object modified: Name " + b.name);
+
+                Log.d("CYNFO MODIFICATION","Is empty: "+areaAdsFragments.isEmpty());
+                if (!areaAdsFragments.isEmpty()) {
+                    for (int i = 0; i < areaAdsFragments.size(); i++) {
+
+                        Log.d("CYNFO MODIFICATION","Condition: "+areaAdsFragments.get(i).FragmentBusiness.name +" "+ b.id_Major);
+                        if (areaAdsFragments.get(i).FragmentBusiness.id_Major == b.id_Major) {
+
+
+                            areaAdsFragments.get(i).BusinessChange(b);
+                            Log.d("CYNFO MODIFICATION", "Object " + b.name+"modified correctly");
+                            break;
+                        }
+                    }
+
+
+                }
+                for (Business savedBussines : BusinessList) {
+
+                        Log.d("CYNFO MODIFICATION", "Modification: Checking - "+ savedBussines.name);
+
+                }
 
             }
 
@@ -112,6 +173,24 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
 
                 Business b = dataSnapshot.getValue(Business.class);
+
+                if (!BusinessList.isEmpty()) {
+                    for (int i = 0; i < BusinessList.size(); i++) {
+                        if (BusinessList.get(i).id_Major == b.id_Major) {
+                            Log.d("CYNFO Modify ID ", "Name " + b.name);
+                            BusinessList.remove(i);
+                            break;
+                        }
+                    }
+
+
+                }
+                for (Business savedBussines : BusinessList) {
+
+                    Log.d("CYNFO check modified", "Name "+ savedBussines.name);
+
+                }
+
 
                 Log.d("CYNFO Removed", "Name "+ b.name);
             }
@@ -133,23 +212,36 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
 
 
+
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout(ALTBEACON_LAYOUT));
         beaconManager.bind(this);
-        AreaAdsFragment fragment1 = AreaAdsFragment.newInstance(0,1);
-        AreaAdsFragment fragment2 = AreaAdsFragment.newInstance(1,1);
-        areaAdsFragments.add(fragment1);
-        areaAdsFragments.add(fragment2);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container,areaAdsFragments.get(0))
-                .commit();
+//        AreaAdsFragment fragment1 = AreaAdsFragment.newInstance(0,1);
+//        AreaAdsFragment fragment2 = AreaAdsFragment.newInstance(1,1);
+//        areaAdsFragments.add(fragment1);
+//        areaAdsFragments.add(fragment2);
+
+
 
 
 
 
     }
 
+    public void CallFragment(){
+
+        if(areaAdsFragments!=null){
+            for (AreaAdsFragment a : areaAdsFragments){
+                Log.d("CYNFO FRAGMENT", "CHANGE "+a.FragmentBusiness.name);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container,areaAdsFragments.get(0))
+                    .commit();
+        }
+
+    }
 
 
 

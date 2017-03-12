@@ -1,4 +1,4 @@
-package com.example.moises.myapplication.Data;
+package com.example.moises.myapplication.Model;
 
 import java.util.ArrayList;
 

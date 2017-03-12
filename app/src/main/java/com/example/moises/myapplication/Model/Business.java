@@ -1,12 +1,13 @@
-package com.example.moises.myapplication.Data;
+package com.example.moises.myapplication.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Moises on 3/10/2017.
  */
 
-public class Business {
+public class Business implements Serializable{
 
     public int id_Major;
     public String name;

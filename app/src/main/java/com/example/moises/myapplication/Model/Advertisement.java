@@ -1,4 +1,4 @@
-package com.example.moises.myapplication.Data;
+package com.example.moises.myapplication.Model;
 
 /**
  * Created by Moises on 3/8/2017.

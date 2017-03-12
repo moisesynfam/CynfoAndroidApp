@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
-import com.example.moises.myapplication.Data.Advertisement;
+import com.example.moises.myapplication.Model.Advertisement;
 
 import java.util.ArrayList;
 
