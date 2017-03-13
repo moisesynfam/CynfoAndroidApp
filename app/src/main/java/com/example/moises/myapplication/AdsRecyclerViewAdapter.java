@@ -6,11 +6,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moises.myapplication.Data.AdsPriorityComparator;
 import com.example.moises.myapplication.Model.Advertisement;
 
@@ -28,6 +31,7 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     public List<Advertisement> ads = new ArrayList<>();
     public Map<String,Advertisement> adsDataset;
     private Set<String> adsKeys;
+    private int lastPosition = -1;
 
     public Context mainContext;
 
@@ -78,11 +82,16 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
                     .into(holder.mImageView);
         }
         */
-        holder.mTextView.setText(ads.get(position).title);
+        int newposition = getItemCount()-position-1;
+        holder.mTextView.setText(ads.get(newposition).title);
         Glide.with(mainContext)
-                .load(ads.get(position).imageURL)
+                .load(ads.get(newposition).imageURL)
                 .crossFade()
-                .into(holder.mImageView);
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.mImageView)
+                    ;
+
+        setAnimation(holder.itemView,newposition);
 
 
 
@@ -95,8 +104,13 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     }
 
     public void getKeys(){
-        ads = new ArrayList<>(adsDataset.values());
-        Collections.sort(ads, new AdsPriorityComparator());
+        ArrayList<Advertisement> changedAds = new ArrayList<>(adsDataset.values());
+        Collections.sort(changedAds, new AdsPriorityComparator());
+
+
+            ads=changedAds;
+
+
 
 
         /*
@@ -104,6 +118,16 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         Log.d("CYNFO",keys.toString());
         adsKeys = keys;
         */
+    }
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mainContext, android.R.anim.slide_in_left);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
 }

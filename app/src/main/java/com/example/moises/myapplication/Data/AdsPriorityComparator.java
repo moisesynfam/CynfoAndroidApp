@@ -11,6 +11,6 @@ import java.util.Comparator;
 public class AdsPriorityComparator implements Comparator<Advertisement> {
     @Override
     public int compare(Advertisement o1, Advertisement o2) {
-        return o2.priority - o1.priority;
+        return o1.priority - o2.priority;
     }
 }
