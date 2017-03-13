@@ -9,17 +9,21 @@ public class Advertisement {
     public  String title;
     public String description;
     public String imageURL;
+    public int id;
+    public int priority;
 
 
     public Advertisement() {
 
     }
 
-    public Advertisement(String title, String description, String imageURL) {
+    public Advertisement(int id, String title, String description, String imageURL, int priority) {
 
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;
+        this.id = id;
+        this.priority = priority;
 
 
     }

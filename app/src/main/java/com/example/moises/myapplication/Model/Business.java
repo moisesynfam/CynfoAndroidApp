@@ -2,16 +2,19 @@ package com.example.moises.myapplication.Model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Moises on 3/10/2017.
  */
 
-public class Business implements Serializable{
+public class Business{
 
     public int id_Major;
     public String name;
-    public ArrayList<Area> areas;
+    public Map<String,Area> areas;
 
 
     public Business() {
@@ -20,7 +23,7 @@ public class Business implements Serializable{
     public Business(int id_Major, String name) {
         this.id_Major = id_Major;
         this.name = name;
-        this.areas = new ArrayList<>();
+        this.areas = new HashMap<>();
     }
 
     public int getId_Major() {
@@ -39,13 +42,18 @@ public class Business implements Serializable{
         this.name = name;
     }
 
-    public ArrayList<Area> getAreas() {
+    public Map<String,Area>  getAreas() {
         return areas;
     }
 
-    public void setAreas(ArrayList<Area> Areas) {
+    public void setAreas(Map<String,Area> Areas) {
         this.areas = Areas;
     }
+    public Set GetAreasKeySet(){
+        return areas.keySet();
+
+    }
+
 }
 
 

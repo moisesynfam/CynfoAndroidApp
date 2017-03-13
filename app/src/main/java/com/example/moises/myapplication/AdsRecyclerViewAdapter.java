@@ -2,6 +2,7 @@ package com.example.moises.myapplication;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,24 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.moises.myapplication.Data.AdsPriorityComparator;
 import com.example.moises.myapplication.Model.Advertisement;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Moises on 3/8/2017.
  */
 
 public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerViewAdapter.ViewHolder> {
+    public List<Advertisement> ads = new ArrayList<>();
+    public Map<String,Advertisement> adsDataset;
+    private Set<String> adsKeys;
 
-
-    private ArrayList<Advertisement> adsDataset;
     public Context mainContext;
 
     // Provide a reference to the views for each data item
@@ -43,9 +50,10 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         }
 
     }
-    public AdsRecyclerViewAdapter(ArrayList<Advertisement> ads, Context context){
+    public AdsRecyclerViewAdapter(Map<String,Advertisement> ads, Context context){
         adsDataset = ads;
         mainContext = context;
+        getKeys();
     }
 
     @Override
@@ -61,12 +69,20 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(adsDataset.get(position).title);
+        /*
+        if(adsDataset.get(adsKeys.toArray()[position])!=null) {
+            holder.mTextView.setText(adsDataset.get(adsKeys.toArray()[position]).title);
+            Glide.with(mainContext)
+                    .load(adsDataset.get(adsKeys.toArray()[position]).imageURL)
+                    .crossFade()
+                    .into(holder.mImageView);
+        }
+        */
+        holder.mTextView.setText(ads.get(position).title);
         Glide.with(mainContext)
-                .load(adsDataset.get(position).imageURL)
+                .load(ads.get(position).imageURL)
                 .crossFade()
                 .into(holder.mImageView);
-
 
 
 
@@ -77,4 +93,17 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     public int getItemCount() {
         return adsDataset.size();
     }
+
+    public void getKeys(){
+        ads = new ArrayList<>(adsDataset.values());
+        Collections.sort(ads, new AdsPriorityComparator());
+
+
+        /*
+        Set<String> keys = adsDataset.keySet();
+        Log.d("CYNFO",keys.toString());
+        adsKeys = keys;
+        */
+    }
+
 }

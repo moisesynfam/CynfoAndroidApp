@@ -1,6 +1,8 @@
 package com.example.moises.myapplication.Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Moises on 3/10/2017.
@@ -10,7 +12,7 @@ public class Area {
 
     public int id_Minor;
     public String name;
-    public ArrayList<Advertisement> ads;
+    public Map<String,Advertisement> ads;
 
     public Area() {
     }
@@ -18,7 +20,7 @@ public class Area {
     public Area(int id_minor, String name) {
         this.id_Minor = id_minor;
         this.name = name;
-        ads = new ArrayList<>();
+        ads = new HashMap<>();
     }
 
     public int getId_Minor() {
@@ -37,11 +39,11 @@ public class Area {
         this.name = name;
     }
 
-    public ArrayList<Advertisement> getAds() {
+    public Map<String,Advertisement> getAds() {
         return ads;
     }
 
-    public void setAds(ArrayList<Advertisement> ads) {
+    public void setAds(Map<String,Advertisement> ads) {
         this.ads = ads;
     }
 }
