@@ -30,7 +30,7 @@ import java.util.Set;
 public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerViewAdapter.ViewHolder> {
     public List<Advertisement> ads = new ArrayList<>();
     public Map<String,Advertisement> adsDataset;
-    private Set<String> adsKeys;
+    public Set<String> adsKeys;
     private int lastPosition = -1;
 
     public Context mainContext;
@@ -51,7 +51,12 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
             mTextView = (TextView) v.findViewById(R.id.ad_title_text);
 
 
+
         }
+
+
+
+
 
     }
     public AdsRecyclerViewAdapter(Map<String,Advertisement> ads, Context context){
@@ -59,6 +64,7 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         mainContext = context;
         getKeys();
     }
+
 
     @Override
     public AdsRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

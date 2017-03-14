@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -124,9 +125,7 @@ public class AreaAdsFragment extends Fragment {
 //                adsBottomSheet.show(getFragmentManager(),adsBottomSheet.getTag());
 
 
-                Intent intent = new Intent(getContext(), AdsDetailsActivity.class);
-                intent.putExtra("ad",FragmentBusiness.areas.get("qwasdmc").ads.get("qweqasd"));
-                startActivity(intent);
+
             }
         });
         mRecyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler_view);
@@ -134,6 +133,27 @@ public class AreaAdsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new AdsRecyclerViewAdapter(FragmentBusiness.areas.get("qwasdmc").ads,getContext());
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(),mRecyclerView,
+                        new RecyclerItemClickListener.OnItemClickListener(){
+
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Log.d("CYNFO ITEM", "Position TOUCHED "+position);
+
+                                Intent intent = new Intent(getContext(), AdsDetailsActivity.class);
+                                intent.putExtra("ad", mAdapter.ads.get(mAdapter.getItemCount()-1-position));
+                                startActivity(intent);
+
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+                        })
+        );
+
         return view;
     }
 

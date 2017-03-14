@@ -7,6 +7,11 @@
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp"
 
+    card_view:cardCornerRadius="2dp"
+    android:focusable="true"
+    android:clickable="true"
+    android:foreground="@drawable/ripple_effect"
+
     card_view:cardElevation="5dp"
     android:layout_height="wrap_content">
 
