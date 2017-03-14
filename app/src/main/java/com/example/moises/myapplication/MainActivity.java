@@ -9,7 +9,9 @@ import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 
+import com.example.moises.myapplication.Data.Database;
 import com.example.moises.myapplication.Model.Advertisement;
 import com.example.moises.myapplication.Model.Area;
 import com.example.moises.myapplication.Model.Business;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private int bestSignal = -1000;
     private int lastAreaVisited = 1232445;
     private int signalCounter = 0;
+    private FirebaseDatabase database;
 
     //public static ArrayList<Business> BusinessList;
     public static Map<String,Business> BusinessList;
@@ -55,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
+
         areaAdsFragments = new ArrayList<AreaAdsFragment>();
         //BusinessList =  new ArrayList<>();
         BusinessList = new HashMap<>();
@@ -81,9 +86,11 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         }
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+        database = Database.getDatabase();
+
         DatabaseReference myRef = database.getReference("businessTest");
 
 
@@ -98,33 +105,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         myRef.keepSynced(true);
 
 
-//         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            synchronized public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for (DataSnapshot single: dataSnapshot.getChildren() ) {
-//
-//                    Business b = single.getValue(Business.class);
-//                    AreaAdsFragment areaAdsFragment = new AreaAdsFragment();
-//                    areaAdsFragment.FragmentBusiness = b;
-//                    areaAdsFragments.add(areaAdsFragment);
-//
-//                    if(b!=null){
-//                        Log.d("CYNFO INITIAL READ ID " + dataSnapshot.getKey(), "Name "+ b.name);
-//                        BusinessList.add(b);
-//                    }
-//                }
-//                CallFragment();
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -132,15 +112,12 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
                Business newBussiness = dataSnapshot.getValue(Business.class);
                 Log.d("CYNFO NEW ID " + dataSnapshot.getKey(), "Name "+ newBussiness.name);
-//
-//                BusinessList.add(newBussiness);
+
 
                 AreaAdsFragment areaAdsFragment = new AreaAdsFragment();
                 areaAdsFragment.FragmentBusiness = newBussiness;
                 areaAdsFragments.add(areaAdsFragment);
-//
-//
-//
+
                 Log.d("CYNFO ADDED ID " + dataSnapshot.getKey(), "Name " + newBussiness.name);
                 CallFragment();
 
@@ -168,11 +145,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
 
                 }
-//                for (Business savedBussines : BusinessList) {
-//
-//                        Log.d("CYNFO MODIFICATION", "Modification: Checking - "+ savedBussines.name);
-//
-//                }
 
             }
 
@@ -192,14 +164,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
 
                 }
-//                for (Business savedBussines : BusinessList) {
-//
-//                    Log.d("CYNFO check modified", "Name "+ savedBussines.name);
-//
-//                }
-//
-//
-//                Log.d("CYNFO Removed", "Name "+ b.name);
+
             }
 
             @Override

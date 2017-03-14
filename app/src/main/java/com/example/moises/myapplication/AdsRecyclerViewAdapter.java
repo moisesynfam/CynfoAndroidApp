@@ -87,9 +87,9 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         Glide.with(mainContext)
                 .load(ads.get(newposition).imageURL)
                 .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.mImageView)
-                    ;
+                .placeholder(R.mipmap.placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.mImageView);
 
         setAnimation(holder.itemView,newposition);
 

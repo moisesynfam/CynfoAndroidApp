@@ -1,10 +1,12 @@
 package com.example.moises.myapplication.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by Moises on 3/8/2017.
  */
 
-public class Advertisement {
+public class Advertisement implements Serializable{
 
     public  String title;
     public String description;

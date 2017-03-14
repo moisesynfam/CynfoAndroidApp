@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by Moises on 3/10/2017.
  */
 
-public class Business{
+public class Business implements Serializable{
 
     public int id_Major;
     public String name;

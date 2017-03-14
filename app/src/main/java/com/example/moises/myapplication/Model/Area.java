@@ -1,5 +1,6 @@
 package com.example.moises.myapplication.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
  * Created by Moises on 3/10/2017.
  */
 
-public class Area {
+public class Area implements Serializable {
 
     public int id_Minor;
     public String name;

@@ -1,5 +1,6 @@
 package com.example.moises.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,15 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.example.moises.myapplication.AdsDetailsActivity;
 
-import com.example.moises.myapplication.Model.Advertisement;
 import com.example.moises.myapplication.Model.Area;
 import com.example.moises.myapplication.Model.Business;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 
 public class AreaAdsFragment extends Fragment {
@@ -122,7 +118,15 @@ public class AreaAdsFragment extends Fragment {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ChangeAreaDataSet(2);
+                //ChangeAreaDataSet(2);
+//                AdsBottomSheetFragment adsBottomSheet = new AdsBottomSheetFragment();
+//                adsBottomSheet.advertisement = FragmentBusiness.areas.get("qwasdmc").ads.get("qweqasd");
+//                adsBottomSheet.show(getFragmentManager(),adsBottomSheet.getTag());
+
+
+                Intent intent = new Intent(getContext(), AdsDetailsActivity.class);
+                intent.putExtra("ad",FragmentBusiness.areas.get("qwasdmc").ads.get("qweqasd"));
+                startActivity(intent);
             }
         });
         mRecyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler_view);
