@@ -14,11 +14,13 @@ public class Area implements Serializable {
     public int id_Minor;
     public String name;
     public Map<String,Advertisement> ads;
+    public String backgroundImage;
 
     public Area() {
     }
 
-    public Area(int id_minor, String name) {
+    public Area(int id_minor, String name, String backgroundImage) {
+        this.backgroundImage = backgroundImage;
         this.id_Minor = id_minor;
         this.name = name;
         ads = new HashMap<>();
@@ -46,6 +48,14 @@ public class Area implements Serializable {
 
     public void setAds(Map<String,Advertisement> ads) {
         this.ads = ads;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
     }
 }
 

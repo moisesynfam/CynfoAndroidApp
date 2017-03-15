@@ -15,14 +15,16 @@ public class Business implements Serializable{
     public int id_Major;
     public String name;
     public Map<String,Area> areas;
+    public String backgroundImage;
 
 
     public Business() {
     }
 
-    public Business(int id_Major, String name) {
+    public Business(int id_Major, String name, String backgroundImage) {
         this.id_Major = id_Major;
         this.name = name;
+        this.backgroundImage=backgroundImage;
         this.areas = new HashMap<>();
     }
 
@@ -49,11 +51,19 @@ public class Business implements Serializable{
     public void setAreas(Map<String,Area> Areas) {
         this.areas = Areas;
     }
+
     public Set GetAreasKeySet(){
         return areas.keySet();
 
     }
 
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
 }
 
 

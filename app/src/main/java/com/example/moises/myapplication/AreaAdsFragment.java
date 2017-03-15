@@ -1,6 +1,11 @@
 package com.example.moises.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +16,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.moises.myapplication.AdsDetailsActivity;
 
 import com.example.moises.myapplication.Model.Area;
@@ -25,6 +37,10 @@ public class AreaAdsFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     public Business FragmentBusiness;
     public int presentArea = 0;
+    private ImageView areaImage;
+    private TextView areaTitle;
+    private RelativeLayout relativeLayout;
+    public boolean loaded = false;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -69,6 +85,8 @@ public class AreaAdsFragment extends Fragment {
              FragmentBusiness = (Business) getArguments().getSerializable(ARG_PARAM1);
 
         }
+
+
     }
 
     public void ChangeAreaDataSet(int minor){
@@ -77,6 +95,27 @@ public class AreaAdsFragment extends Fragment {
         for (Area a : FragmentBusiness.areas.values()){
             if(a.id_Minor == minor){
 
+
+
+//                Glide.with(this).load(a.backgroundImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(relativeLayout.getWidth(), relativeLayout.getHeight()) {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                        Drawable drawable = new BitmapDrawable(resource);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                            relativeLayout.setBackground(drawable);
+//                        }
+//                    }
+//                });
+
+
+                Glide.with(getContext())
+                        .load(a.backgroundImage)
+                        .centerCrop()
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(areaImage);
+
+                areaTitle.setText(a.name);
                 mAdapter.adsDataset =a.ads;
                 presentArea = minor;
                 mAdapter.getKeys();
@@ -86,6 +125,7 @@ public class AreaAdsFragment extends Fragment {
         }
     }
 
+    //En caso de algun cambio;
     public void BusinessChange(Business business){
         FragmentBusiness = business;
         ChangeAreaDataSet(presentArea);
@@ -107,7 +147,8 @@ public class AreaAdsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
 
         Button b1 = (Button) view.findViewById(R.id.button1);
-        Button b2 = (Button) view.findViewById(R.id.button2);
+
+
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,23 +157,18 @@ public class AreaAdsFragment extends Fragment {
             }
         });
 
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //ChangeAreaDataSet(2);
-//                AdsBottomSheetFragment adsBottomSheet = new AdsBottomSheetFragment();
-//                adsBottomSheet.advertisement = FragmentBusiness.areas.get("qwasdmc").ads.get("qweqasd");
-//                adsBottomSheet.show(getFragmentManager(),adsBottomSheet.getTag());
 
-
-
-            }
-        });
+        TextView t = (TextView) view.findViewById(R.id.business_title);
+        t.setText(FragmentBusiness.name);
+        areaImage = (ImageView)view.findViewById(R.id.ads_area_imageview);
+        areaTitle = (TextView) view.findViewById(R.id.ads_area_title);
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.ads_area_image);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new AdsRecyclerViewAdapter(FragmentBusiness.areas.get("qwasdmc").ads,getContext());
+        mAdapter = new AdsRecyclerViewAdapter(getContext());
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(),mRecyclerView,
                         new RecyclerItemClickListener.OnItemClickListener(){
@@ -153,13 +189,12 @@ public class AreaAdsFragment extends Fragment {
                             }
                         })
         );
-
+        ChangeAreaDataSet(presentArea);
         return view;
     }
 
-
-
-
-
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 }

@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 
@@ -20,7 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
+
 
 import static org.altbeacon.beacon.BeaconParser.ALTBEACON_LAYOUT;
 
@@ -47,9 +47,11 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private BeaconManager beaconManager;
     private ArrayList<AreaAdsFragment> areaAdsFragments;
     private int bestSignal = -1000;
-    private int lastAreaVisited = 1232445;
+    private int lastAreaVisited = -1;
     private int signalCounter = 0;
     private FirebaseDatabase database;
+    private int lastBussinesVisited = -1;
+    private int lastBussinesVisitedID = -1;
 
     //public static ArrayList<Business> BusinessList;
     public static Map<String,Business> BusinessList;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
+
 
         areaAdsFragments = new ArrayList<AreaAdsFragment>();
         //BusinessList =  new ArrayList<>();
@@ -95,12 +98,16 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
 
 
-//        Business business = new Business(2,"Apple");
-//        Area area = new Area(2,"music");
-//        Advertisement ad = new Advertisement("Title","lol","http://webneel.com/daily/sites/default/files/images/project/creative-advertisement%20(13).jpg");
-//        area.ads.put("qweqawqwed",ad);
-//        business.areas.put("qwasdmc",area);
-//        myRef.child(String.valueOf(business.id_Major)).setValue(business);
+        Business business = new Business(1,"Forever 21","http://cdn.girabsas.com/122015/1467228434092.jpg");
+        Area area = new Area(1,"Women","http://picture-cdn.wheretoget.it/egqn1d-i.jpg");
+        Area area2 = new Area(2,"Men","https://quemepongoblog.files.wordpress.com/2014/07/03_-banner_forever21_man_.jpg?w=750");
+        Advertisement ad = new Advertisement(0,"Line 0","lol","http://thebestfashionblog.com/wp-content/uploads/2014/02/Forever-21-Womens-Sweaters-2014-5.jpg",4);
+        Advertisement ad2 = new Advertisement(1,"Line 1","lol","http://www.thefashionisto.com/wp-content/uploads/2015/01/Plaid-Bomber-Jacket.jpg",4);
+        area.ads.put("eewdwqeq",ad);
+        area2.ads.put("eewdeq",ad2);
+        business.areas.put("weqsdmc",area);
+        business.areas.put("weqewefsdmc",area2);
+        myRef.child(String.valueOf(business.id_Major)).setValue(business);
 
         myRef.keepSynced(true);
 
@@ -119,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 areaAdsFragments.add(areaAdsFragment);
 
                 Log.d("CYNFO ADDED ID " + dataSnapshot.getKey(), "Name " + newBussiness.name);
-                CallFragment();
+
 
 
 
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout(ALTBEACON_LAYOUT));
         beaconManager.bind(this);
+
 //        AreaAdsFragment fragment1 = AreaAdsFragment.newInstance(0,1);
 //        AreaAdsFragment fragment2 = AreaAdsFragment.newInstance(1,1);
 //        areaAdsFragments.add(fragment1);
@@ -201,11 +209,11 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     }
 
-    public void CallFragment(){
+    public void CallFragment(int bussinessID){
 
         if(areaAdsFragments!=null){
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container,areaAdsFragments.get(0))
+                    .replace(R.id.fragment_container,areaAdsFragments.get(bussinessID))
                     .commit();
         }
 
@@ -264,14 +272,42 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                     }
 
 
-                   if(activeBeacon.getRssi()>bestSignal && activeBeacon.getRssi()>-90&&lastAreaVisited!=activeBeacon.getId3().toInt()){
+                   if(activeBeacon.getRssi()>bestSignal && activeBeacon.getRssi()>-90){
                         Log.i(TAG,"INSIDE");
                         bestSignal = activeBeacon.getRssi();
-                        lastAreaVisited = activeBeacon.getId3().toInt();
-                        Log.i(TAG,"Las visited Area RENEW:"+lastAreaVisited);
-                        if(!areaAdsFragments.isEmpty()){
+
+
+                       if(lastBussinesVisited != activeBeacon.getId2().toInt()&&!areaAdsFragments.isEmpty()){
+
+                           for (int i=0 ; i<areaAdsFragments.size();i++ ){
+                               if (areaAdsFragments.get(i).FragmentBusiness.id_Major == activeBeacon.getId2().toInt()){
+
+                                   areaAdsFragments.get(i).presentArea =activeBeacon.getId3().toInt();
+                                   CallFragment(i);
+
+                                   lastAreaVisited = activeBeacon.getId3().toInt();
+                                   lastBussinesVisited = activeBeacon.getId2().toInt();
+                                   lastBussinesVisitedID = i;
+                                   break;
+
+
+                               }
+
+
+                           }
 
                         }
+
+                       if(lastAreaVisited!= activeBeacon.getId3().toInt()) {
+
+                           Log.i("Cynfo","Last visited Area Different:"+activeBeacon.getId3().toInt());
+
+                           areaAdsFragments.get(lastBussinesVisitedID).ChangeAreaDataSet(activeBeacon.getId3().toInt());
+
+                           Log.i(TAG,"Las visited Area RENEW:"+lastAreaVisited);
+                           lastAreaVisited = activeBeacon.getId3().toInt();
+
+                       }
                     }
 
                     signalCounter++;

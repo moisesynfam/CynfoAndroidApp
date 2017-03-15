@@ -19,6 +19,7 @@ import com.example.moises.myapplication.Model.Advertisement;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,8 +60,8 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
 
 
     }
-    public AdsRecyclerViewAdapter(Map<String,Advertisement> ads, Context context){
-        adsDataset = ads;
+    public AdsRecyclerViewAdapter( Context context){
+        adsDataset = new HashMap<>();
         mainContext = context;
         getKeys();
     }
@@ -93,7 +94,7 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         Glide.with(mainContext)
                 .load(ads.get(newposition).imageURL)
                 .crossFade()
-                .placeholder(R.mipmap.placeholder)
+
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.mImageView);
 
