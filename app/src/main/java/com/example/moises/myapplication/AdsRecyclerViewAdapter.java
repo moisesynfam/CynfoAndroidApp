@@ -95,7 +95,7 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
                 .load(ads.get(newposition).imageURL)
                 .crossFade()
 
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(holder.mImageView);
 
         setAnimation(holder.itemView,newposition);

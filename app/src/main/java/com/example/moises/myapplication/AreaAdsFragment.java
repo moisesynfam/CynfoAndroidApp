@@ -1,13 +1,19 @@
 package com.example.moises.myapplication;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -84,6 +90,7 @@ public class AreaAdsFragment extends Fragment {
             //AreaMajor = getArguments().getInt(ARG_PARAM2);
              FragmentBusiness = (Business) getArguments().getSerializable(ARG_PARAM1);
 
+
         }
 
 
@@ -92,28 +99,32 @@ public class AreaAdsFragment extends Fragment {
     public void ChangeAreaDataSet(int minor){
 
 
-        for (Area a : FragmentBusiness.areas.values()){
+        for (final Area a : FragmentBusiness.areas.values()){
             if(a.id_Minor == minor){
 
 
-
-//                Glide.with(this).load(a.backgroundImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(relativeLayout.getWidth(), relativeLayout.getHeight()) {
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        Drawable drawable = new BitmapDrawable(resource);
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                            relativeLayout.setBackground(drawable);
-//                        }
-//                    }
-//                });
+                Glide.with(MainActivity.context)
+                    .load(a.backgroundImage)
+                    .centerCrop()
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(areaImage);
 
 
-                Glide.with(getContext())
-                        .load(a.backgroundImage)
-                        .centerCrop()
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(areaImage);
+               // Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
+                mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                //mBuilder.setSound(alarmSound);
+                mBuilder.setContentTitle("Ha entrado al area "+a.getName());
+                mBuilder.setContentText("Bienvenido esperamos que lo disfrute");
+
+
+                mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+                mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+
+
+                MainActivity.mNotificationManager.notify(1,mBuilder.build());
+
 
                 areaTitle.setText(a.name);
                 mAdapter.adsDataset =a.ads;
