@@ -3,8 +3,10 @@ package com.example.moises.myapplication;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.RemoteException;
@@ -29,6 +31,7 @@ import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Identifier;
+import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
@@ -54,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
     private FirebaseDatabase database;
     private int lastBussinesVisited = -1;
     private int lastBussinesVisitedID = -1;
-
+    private InitialFragment initialFragment;
+    private int REQUEST_ENABLE_BT =89;
     public static NotificationManager mNotificationManager;
     static public Context context;
     //public static ArrayList<Business> BusinessList;
@@ -67,12 +71,18 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_main);
 
+        initialFragment = InitialFragment.newInstance("","");
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         context = this;
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         areaAdsFragments = new ArrayList<AreaAdsFragment>();
         //BusinessList =  new ArrayList<>();
         BusinessList = new HashMap<>();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container,initialFragment)
+                .commit();
 
         // Permission To locate beacons ///
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -94,7 +104,14 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
             }
 
         }
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter != null) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
+            }
+        }
 
 
 
@@ -102,18 +119,6 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         DatabaseReference myRef = database.getReference("businessTest");
 
-
-
-//        Business business = new Business(1,"Forever 21","http://cdn.girabsas.com/122015/1467228434092.jpg");
-//        Area area = new Area(1,"Women","http://picture-cdn.wheretoget.it/egqn1d-i.jpg");
-//        Area area2 = new Area(2,"Men","https://quemepongoblog.files.wordpress.com/2014/07/03_-banner_forever21_man_.jpg?w=750");
-//        Advertisement ad = new Advertisement(0,"Line 0","lol","http://thebestfashionblog.com/wp-content/uploads/2014/02/Forever-21-Womens-Sweaters-2014-5.jpg",4);
-//        Advertisement ad2 = new Advertisement(1,"Line 1","lol","http://www.thefashionisto.com/wp-content/uploads/2015/01/Plaid-Bomber-Jacket.jpg",4);
-//        area.ads.put("eewdwqeq",ad);
-//        area2.ads.put("eewdeq",ad2);
-//        business.areas.put("weqsdmc",area);
-//        business.areas.put("weqewefsdmc",area2);
-//        myRef.child(String.valueOf(business.id_Major)).setValue(business);
 
         myRef.keepSynced(true);
 
@@ -167,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
                 }
 
             }
+
+
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -222,6 +229,46 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     }
 
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d(TAG,"On activity Request"+ requestCode);
+
+        if (requestCode == REQUEST_ENABLE_BT) {
+
+            if(resultCode == RESULT_CANCELED){
+                Log.d(TAG,"On activity Result"+ resultCode);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Cynfo necesita el adaptador de bluetooth para funcionar, de lo" +
+                        "contrario se cerrará ¿Desea activar el adaptador bluetooth?")
+                        .setTitle("Error al encender bluetooth");
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (mBluetoothAdapter != null) {
+                            if (!mBluetoothAdapter.isEnabled()) {
+                                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
+                            }
+                        }
+
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        finishAndRemoveTask();
+                    }
+                });
+
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+        }
+    }
+
     public void CallFragment(int bussinessID){
 
         if(areaAdsFragments!=null){
@@ -262,6 +309,30 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
+
+        beaconManager.addMonitorNotifier(new MonitorNotifier() {
+            @Override
+            public void didEnterRegion(Region region) {
+                Log.i(TAG, "I just saw an beacon for the first time!");
+            }
+
+            @Override
+            public void didExitRegion(Region region) {
+                Log.i(TAG, "I no longer see an beacon");
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container,initialFragment)
+                        .commit();
+            }
+
+            @Override
+            public void didDetermineStateForRegion(int state, Region region) {
+                Log.i(TAG, "I have just switched from seeing/not seeing beacons: "+state);
+            }
+        });
+
+        try {
+            beaconManager.startMonitoringBeaconsInRegion(region);
+        } catch (RemoteException e) {    }
 
 
         beaconManager.addRangeNotifier(new RangeNotifier() {

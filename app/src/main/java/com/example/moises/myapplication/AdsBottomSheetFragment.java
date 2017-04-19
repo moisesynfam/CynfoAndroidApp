@@ -50,6 +50,7 @@ public class AdsBottomSheetFragment extends BottomSheetDialogFragment {
         description = (TextView) v.findViewById(R.id.bttm_description);
         image = (ImageView) v.findViewById(R.id.bttm_image);
 
+
         if(advertisement!=null){
 
             title.setText(advertisement.title);

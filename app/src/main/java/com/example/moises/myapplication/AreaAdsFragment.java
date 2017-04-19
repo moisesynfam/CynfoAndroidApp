@@ -157,16 +157,11 @@ public class AreaAdsFragment extends Fragment {
 
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
 
-        Button b1 = (Button) view.findViewById(R.id.button1);
 
 
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ChangeAreaDataSet(1);
-            }
-        });
+
+
 
 
         TextView t = (TextView) view.findViewById(R.id.business_title);
