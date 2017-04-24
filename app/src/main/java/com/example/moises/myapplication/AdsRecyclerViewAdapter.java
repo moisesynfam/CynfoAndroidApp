@@ -32,7 +32,7 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
     public List<Advertisement> ads = new ArrayList<>();
     public Map<String,Advertisement> adsDataset;
     public Set<String> adsKeys;
-    private int lastPosition = -1;
+    public int lastPosition = -1;
 
     public Context mainContext;
 
@@ -90,12 +90,13 @@ public class AdsRecyclerViewAdapter extends RecyclerView.Adapter<AdsRecyclerView
         }
         */
         int newposition = getItemCount()-position-1;
+        Log.d("POSITION",""+newposition);
         holder.mTextView.setText(ads.get(newposition).title);
         Glide.with(mainContext)
                 .load(ads.get(newposition).imageURL)
                 .crossFade()
 
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.mImageView);
 
         setAnimation(holder.itemView,newposition);

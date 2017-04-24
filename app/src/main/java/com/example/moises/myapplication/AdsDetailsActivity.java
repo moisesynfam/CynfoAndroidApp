@@ -47,7 +47,7 @@ public class AdsDetailsActivity extends AppCompatActivity {
             Glide.with(this)
                     .load(advertisement.imageURL)
 
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .crossFade()
                     .into(image);
 

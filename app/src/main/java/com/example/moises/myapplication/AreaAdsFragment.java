@@ -109,7 +109,7 @@ public class AreaAdsFragment extends Fragment {
                     .load(a.backgroundImage)
                     .centerCrop()
                     .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(areaImage);
 
 
@@ -133,6 +133,7 @@ public class AreaAdsFragment extends Fragment {
                 presentArea = minor;
                 mAdapter.getKeys();
                 mAdapter.notifyDataSetChanged();
+
                 break;
             }
         }
