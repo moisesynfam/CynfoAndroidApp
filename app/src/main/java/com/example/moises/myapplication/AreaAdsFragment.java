@@ -117,8 +117,8 @@ public class AreaAdsFragment extends Fragment {
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
                 mBuilder.setSmallIcon(R.mipmap.ic_launcher);
                 //mBuilder.setSound(alarmSound);
-                mBuilder.setContentTitle("Ha entrado al area "+a.getName());
-                mBuilder.setContentText("Bienvenido esperamos que lo disfrute");
+                mBuilder.setContentTitle("Se encuentra en "+FragmentBusiness.getName());
+                mBuilder.setContentText(a.greetingMessage);
 
 
                 mBuilder.setDefaults(Notification.DEFAULT_VIBRATE);

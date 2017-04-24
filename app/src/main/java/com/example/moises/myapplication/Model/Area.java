@@ -58,6 +58,14 @@ public class Area implements Serializable {
     public void setBackgroundImage(String backgroundImage) {
         this.backgroundImage = backgroundImage;
     }
+
+    public String getGreetingMessage() {
+        return greetingMessage;
+    }
+
+    public void setGreetingMessage(String greetingMessage) {
+        this.greetingMessage = greetingMessage;
+    }
 }
 
 
