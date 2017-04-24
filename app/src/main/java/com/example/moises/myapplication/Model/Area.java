@@ -15,11 +15,12 @@ public class Area implements Serializable {
     public String name;
     public Map<String,Advertisement> ads;
     public String backgroundImage;
+    public String greetingMessage;
 
     public Area() {
     }
 
-    public Area(int id_minor, String name, String backgroundImage) {
+    public Area(int id_minor, String name, String backgroundImage, String greetingMessage) {
         this.backgroundImage = backgroundImage;
         this.id_Minor = id_minor;
         this.name = name;

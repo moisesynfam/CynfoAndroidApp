@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements BeaconConsumer {
 
         database = Database.getDatabase();
 
-        DatabaseReference myRef = database.getReference("businessTest");
+        DatabaseReference myRef = database.getReference("database");
 
 
         myRef.keepSynced(true);

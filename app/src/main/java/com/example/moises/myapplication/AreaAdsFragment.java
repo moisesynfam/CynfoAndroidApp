@@ -1,5 +1,6 @@
 package com.example.moises.myapplication;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -157,13 +159,6 @@ public class AreaAdsFragment extends Fragment {
 
         View view =  inflater.inflate(R.layout.fragment_area_ads, container, false);
 
-
-
-
-
-
-
-
         TextView t = (TextView) view.findViewById(R.id.business_title);
         t.setText(FragmentBusiness.name);
         areaImage = (ImageView)view.findViewById(R.id.ads_area_imageview);
@@ -182,7 +177,6 @@ public class AreaAdsFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
                                 Log.d("CYNFO ITEM", "Position TOUCHED "+position);
-
                                 Intent intent = new Intent(getContext(), AdsDetailsActivity.class);
                                 intent.putExtra("ad", mAdapter.ads.get(mAdapter.getItemCount()-1-position));
                                 startActivity(intent);

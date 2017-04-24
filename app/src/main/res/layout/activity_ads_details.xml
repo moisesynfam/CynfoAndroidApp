@@ -15,38 +15,63 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
         <TextView
             android:id="@+id/detail_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="500dp"
-            android:text="Introducing Modal Bottom Sheet"
-            android:textSize="30dp"
-            android:paddingTop="20dp"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-
-          />
+            android:paddingTop="10dp"
+            android:text="Introducing Modal Bottom Sheet"
+            android:layout_gravity="start"
+            android:textAlignment="viewStart"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.WindowTitle"
+            android:textColor="@color/colorAccent"
+            android:textSize="30sp"/>
 
         <ImageView
             android:id="@+id/detail_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@mipmap/c_placeholder_2"
-            />
-        <TextView
-            android:id="@+id/detail_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Introducing Modal Bottom Sheet"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+
 
             />
+
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            android:layout_margin="10dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/detail_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Introducing Modal Bottom Sheet"
+                    android:textColor="@android:color/white"
+
+
+
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 
 </ScrollView>
